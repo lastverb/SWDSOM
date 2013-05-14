@@ -1,0 +1,11 @@
+Marka;Model;Cena;Rok produkcji;Przebieg;Skrzynia;Moc;Pojemnosc silnika;Paliwo;Drzwi;dodatki;
+
+Cena - max 150000
+Rok produkcji - min 1990, max 2012
+Przebieg - max 250000
+Skrzynia - automatyczna=1, manualna=0
+Moc - min 50, max 200
+Pojemnosc - min 500, max 5000
+Paliwo - diesel=1, benzyna=0
+Drzwi - 4/5 = 1, 2/3 = 0
+dodatki - {"ABS","klimatyzacja","centralny zamek","alufelgi","4x4","el. lusterka","el. szyby","komputer","szyberdach"} jest = 1, nie ma = 0
