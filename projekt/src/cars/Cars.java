@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -42,13 +41,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import som.net.SOMNet;
+import test.Test;
 
 public class Cars {
 	private static final int WINNERS_CARS = 10;
 	private static final int WINNERS_NEURON = 20;
-	public static final int COUNT = 1000;
-	public static final int WIDTH = 50;
-	public static final int HEIGHT = 50;
+	public static final int COUNT = 2;
+	public static final int WIDTH = 2;
+	public static final int HEIGHT = 2;
 	public static final int ATTR_COUNT = 17;
 
 	public CarNet carnet = new CarNet();
@@ -109,7 +109,6 @@ public class Cars {
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -120,6 +119,8 @@ public class Cars {
 				}
 			}
 		});
+		Test t = new Test();
+		t.test();
 	}
 
 	public Cars() {
@@ -201,7 +202,7 @@ public class Cars {
 				carnet.net.calculate();
 
 				int[] winners = carnet.net.winners(WINNERS_NEURON);
-				System.out.println(Arrays.toString(winners));
+				//System.out.println(Arrays.toString(winners));
 
 				cars = new String[WINNERS_CARS];
 				carsNo = new int[WINNERS_CARS];
@@ -631,7 +632,7 @@ public class Cars {
 //				for (int i = 0; i < COUNT; i++) {
 //					carnet.net.setWeight(i, carnet.attrDb[i]);
 //				}
-                            carnet.net.randomizeWeights();
+               carnet.net.randomizeWeights();
 			}
 		});
 		resetWeightsBtn.setBounds(10, 45, 140, 23);
@@ -640,15 +641,15 @@ public class Cars {
 		JButton teachNetBtn = new JButton("Ucz sie\u0107");
 		teachNetBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				double[][] meaus = carnet.net.teach(carnet.attrDb, Double.parseDouble(minNiTxt.getText()), Double.parseDouble(maxNiTxt.getText()), Integer.parseInt(minDTxt.getText()),
-						Integer.parseInt(maxDTxt.getText()), Integer.parseInt(maxEpochTxt.getText()), chckbxGauss.isSelected());
+				double[][] meaus = carnet.net.teach(carnet.attrDb, Double.parseDouble(minNiTxt.getText()), Double.parseDouble(maxNiTxt.getText()), Double.parseDouble(minDTxt.getText()),
+						Double.parseDouble(maxDTxt.getText()), Integer.parseInt(maxEpochTxt.getText()), chckbxGauss.isSelected());
                                 
-                                for(int i=0;i<meaus.length;i++){
-                                    System.out.print(meaus[i][0]+" ");
-                                }System.out.print("\n");
-                                for(int i=0;i<meaus.length;i++){
-                                    System.out.print(meaus[i][1]+" ");
-                                }System.out.print("\n");
+//                                for(int i=0;i<meaus.length;i++){
+//                                    System.out.print(meaus[i][0]+" ");
+//                                }System.out.print("\n");
+//                                for(int i=0;i<meaus.length;i++){
+//                                    System.out.print(meaus[i][1]+" ");
+//                                }System.out.print("\n");
                                 
 				for (int i = 0; i < COUNT; i++) {
 					carnet.net.setInput(carnet.carDb[i].attr);

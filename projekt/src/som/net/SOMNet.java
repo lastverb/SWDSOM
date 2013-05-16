@@ -33,7 +33,7 @@ public class SOMNet implements Serializable {
 
 	public void setInput(double[] vector) {
 		arraycopy(vector, 0, input.val, 0, vectorLength);
-		input.normalize();
+//		input.normalize();
 	}
 
 	public void calculate() {
@@ -89,7 +89,7 @@ public class SOMNet implements Serializable {
 		return winners;
 	}
 
-	public double[][] teach(double[][] trainset, double minLearningFactor, double maxLearningFactor, int minRadius, int maxRadius, int maxEpoch, boolean useGauss) {
+	public double[][] teach(double[][] trainset, double minLearningFactor, double maxLearningFactor, double minRadius, double maxRadius, int maxEpoch, boolean useGauss) {
 		double organizationMeasure[][] = new double[maxEpoch][2];
 		for (int epoch = 0; epoch < maxEpoch; epoch++) {
 			// shuffling trainset is needed?
@@ -100,6 +100,7 @@ public class SOMNet implements Serializable {
 			}
 			organizationMeasure[epoch] = calculateOrganizationMeasure();
 		}
+		test(trainset);
 		return organizationMeasure;
 	}
 
@@ -154,19 +155,24 @@ public class SOMNet implements Serializable {
 			for (int j = 0; j < vectorLength; j++) {
 				weights[i].val[j] = random();
 			}
-			weights[i].normalize();
+//			weights[i].normalize();
+			System.out.println(i + " " + weights[i]);
 		}
 	}
 	
 	public void setWeight(int weightNo, double[] val) {
 		arraycopy(val, 0, weights[weightNo].val, 0, vectorLength);
-		weights[weightNo].normalize();
+//		weights[weightNo].normalize();
 	}
 
-	public void modifyWeights(double minLearningFactor, double maxLearningFactor, int minRadius, int maxRadius, int epoch, int maxEpoch, boolean useGauss) {
+	public void modifyWeights(double minLearningFactor, double maxLearningFactor, double minRadius, double maxRadius, int epoch, int maxEpoch, boolean useGauss) {
 		int winner = winner();
 		double curRadius = inTime(minRadius, maxRadius, epoch, maxEpoch);
 		double curFactor = inTime(minLearningFactor, maxLearningFactor, epoch, maxEpoch);
+		System.out.println("----" + epoch + " " + curRadius + " " + curFactor + "----");
+		for(int i = 0; i < outputsCount; ++i)
+			System.out.print(input.euclideanDistance(weights[i]) + " ");
+		System.out.print("\n");
 		for (int i = 0; i < outputsCount; i++) {
 			if (topologicD(winner, i) <= curRadius) {
 				Vector delta = input.clone().minus(weights[i]).multiply(curFactor);
@@ -176,7 +182,8 @@ public class SOMNet implements Serializable {
 				}
 
 				weights[i].plus(delta);
-				weights[i].normalize();
+//				weights[i].normalize();
+				System.out.println(i + " " + weights[i]);
 			}
 		}
 	}
@@ -193,8 +200,8 @@ public class SOMNet implements Serializable {
 		return sqrt(pow2(winnerx - otherx) + pow2(winnery - othery));
 	}
 
-	public double inTime(double minV, double maxV, double minT, double maxT) {
-		return maxV * pow(minV / maxV, minT / maxT);
+	public static double inTime(double minV, double maxV, double curT, double maxT) {
+		return minV + (maxV-minV) * (maxT - curT)/(maxT);
 	}
 
 	public int[] winnerPosition() {
@@ -209,5 +216,44 @@ public class SOMNet implements Serializable {
 
 	public static double pow2(double x) {
 		return x * x;
+	}
+	
+	private void test(double[][] trainset){
+		System.out.println("----- PO UCZENIU -----");
+		Vector w = new Vector(17);
+		w.val[0] = 0.5733333333333334;
+		w.val[1] = 0.8636363636363636;
+		w.val[2] = 0.032;
+		w.val[3] = 0.0;
+		w.val[4] = 0.6666666666666666;
+		w.val[5] = 0.33244444444444443;
+		w.val[6] = 1.0;
+		w.val[7] = 1.0;
+		w.val[8] = 1.0;
+		w.val[9] = 1.0;
+		w.val[10] = 1.0;
+		w.val[11] = 1.0;
+		w.val[12] = 1.0;
+		w.val[13] = 1.0;
+		w.val[14] = 0.0;
+		w.val[15] = 1.0;
+		w.val[16] = 0.0;
+		
+		System.out.println("-- Kia Carens --");
+		setInput(trainset[0]);
+		for(int i = 0; i < 4; ++i)
+			System.out.print(input.euclideanDistance(weights[i]) + " ");
+		System.out.print("\n");
+		
+		System.out.println("-- Mitsubishi Outlander --");
+		setInput(trainset[1]);
+		for(int i = 0; i < 4; ++i)
+			System.out.print(input.euclideanDistance(weights[i]) + " ");
+		System.out.print("\n");
+		
+		System.out.println("-- Chevrolet Captiva --");
+		for(int i = 0; i < 4; ++i)
+			System.out.print(w.euclideanDistance(weights[i]) + " ");
+		System.out.print("\n");
 	}
 }
