@@ -94,6 +94,13 @@ public class Cars {
 	private JCheckBox checkSzyberdach2;
 	private JCheckBox checkAbs;
 	private JList<String> list;
+	
+	JButton szukajBtn;
+	JButton loadNetBtn;
+	JButton saveNetBtn;
+	JButton loadTrainsetBtn;
+	JButton resetWeightsBtn;
+	JButton teachNetBtn;
 
 	private int[] carsNo;
 	private int[] neuronsNo;
@@ -152,54 +159,8 @@ public class Cars {
 		panel_1.add(panel_5);
 		panel_5.setLayout(null);
 
-		JButton szukajBtn = new JButton("Szukaj");
-		szukajBtn.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				double cena = parseDouble(textCena.getText());
-				double rok = parseDouble(textRok.getText());
-				double przebieg = parseDouble(textPrzebieg.getText());
-				double skrzynia = comboSkrzynia.getSelectedIndex() == 0 ? 1 : 0;
-				double moc = parseDouble(textMoc.getText());
-				double pojemnosc = parseDouble(textPojemnosc.getText());
-				double paliwo = comboPaliwo.getSelectedIndex() == 0 ? 1 : 0;
-				double drzwi = comboDrzwi.getSelectedIndex() == 0 ? 1 : 0;
-				double abs = checkAbs.isSelected() ? 1 : 0;
-				double klimatyzacja = checkKlimatyzacja.isSelected() ? 1 : 0;
-				double centralny = checkCentralnyZamek.isSelected() ? 1 : 0;
-				double alufelgi = checkAlufelgi.isSelected() ? 1 : 0;
-				double x4x4 = check4x4.isSelected() ? 1 : 0;
-				double lusterka = checkElLusterka.isSelected() ? 1 : 0;
-				double szyby = checkElSzyby.isSelected() ? 1 : 0;
-				double komputer = checkKomputer.isSelected() ? 1 : 0;
-				double szyberdach = checkSzyberdach.isSelected() ? 1 : 0;
-
-				double[] input = new double[ATTR_COUNT];
-				input[0] = cena / 150000.;
-				input[1] = (rok - 1990.) / 22.;
-				input[2] = przebieg / 250000.;
-				input[3] = skrzynia;
-				input[4] = (moc - 50.) / 150.;
-				input[5] = (pojemnosc - 500.) / 4500.;
-				input[6] = paliwo;
-				input[7] = drzwi;
-				input[8] = abs;
-				input[9] = klimatyzacja;
-				input[10] = centralny;
-				input[11] = alufelgi;
-				input[12] = x4x4;
-				input[13] = lusterka;
-				input[14] = szyby;
-				input[15] = komputer;
-				input[16] = szyberdach;
-
-				carnet.net.setInput(input);
-				carnet.net.calculateDistancesToInput();
-
-				findWinners();
-			}
-
-		});
+		szukajBtn = new JButton("Szukaj");
+		
 		szukajBtn.setBounds(336, 156, 91, 23);
 		panel_5.add(szukajBtn);
 
@@ -348,20 +309,7 @@ public class Cars {
 			}
 		});
 		scrollPane.setViewportView(list);
-		list.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				int selectedIndex = list.getSelectedIndex();
-				if (selectedIndex >= 0) {
-					updateCarInfo(selectedIndex);
-					fillNetMap();
-					int neuronNo = neuronsNo[selectedIndex];
-					image.setRGB(neuronNo % WIDTH, neuronNo / WIDTH, 0xFF0000);
-					netMap.repaint();
-				}
-			}
-
-		});
+		
 
 		JPanel panel_7 = new JPanel();
 		panel_7.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null), "Cechy", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -511,55 +459,11 @@ public class Cars {
 		panel_3.setBounds(10, 11, 437, 37);
 		panel_2.add(panel_3);
 
-		JButton loadNetBtn = new JButton("Wczytaj sie\u0107");
-		loadNetBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int val = chooser.showOpenDialog(frame);
-
-				if (val == JFileChooser.APPROVE_OPTION) {
-					carnet = load(chooser.getSelectedFile().getPath());
-				}
-			}
-
-			public CarNet load(String filename) {
-				try {
-					FileInputStream fis = new FileInputStream(filename);
-					GZIPInputStream gzis = new GZIPInputStream(fis);
-					ObjectInputStream in = new ObjectInputStream(gzis);
-					CarNet net = (CarNet) in.readObject();
-					in.close();
-					return net;
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				return null;
-			}
-		});
+		loadNetBtn = new JButton("Wczytaj sie\u0107");
 		panel_3.add(loadNetBtn);
 
-		JButton saveNetBtn = new JButton("Zapisz sie\u0107");
-		saveNetBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int val = chooser.showSaveDialog(frame);
-
-				if (val == JFileChooser.APPROVE_OPTION) {
-					save(chooser.getSelectedFile().getPath(), carnet);
-				}
-			}
-
-			public void save(String filename, CarNet net) {
-				try {
-					FileOutputStream fos = new FileOutputStream(filename);
-					GZIPOutputStream gzos = new GZIPOutputStream(fos);
-					ObjectOutputStream out = new ObjectOutputStream(gzos);
-					out.writeObject(net);
-					out.flush();
-					out.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		saveNetBtn = new JButton("Zapisz sie\u0107");
+		
 		panel_3.add(saveNetBtn);
 
 		JPanel panel_4 = new JPanel();
@@ -568,33 +472,18 @@ public class Cars {
 		panel_2.add(panel_4);
 		panel_4.setLayout(null);
 
-		JButton loadTrainsetBtn = new JButton("Wczytaj zbi\u00F3r ucz\u0105cy");
-		loadTrainsetBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				DbReader.Db db = DbReader.read("cars.txt", COUNT);
-				carnet.carDb = db.db;
-				carnet.attrDb = db.attrDb;
-				carnet.winnerCarForNeuron = new int[FINALSIZE];
-			}
-		});
+		loadTrainsetBtn = new JButton("Wczytaj zbi\u00F3r ucz\u0105cy");
+		
 		loadTrainsetBtn.setBounds(10, 11, 140, 23);
 		panel_4.add(loadTrainsetBtn);
 
-		JButton resetWeightsBtn = new JButton("Zresetuj wagi");
-		resetWeightsBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-               carnet.net.randomizeWeights();
-			}
-		});
+		resetWeightsBtn = new JButton("Zresetuj wagi");
+		
 		resetWeightsBtn.setBounds(10, 45, 140, 23);
 		panel_4.add(resetWeightsBtn);
 
-		JButton teachNetBtn = new JButton("Ucz sie\u0107");
-		teachNetBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				teachingProcedure();
-			}
-		});
+		teachNetBtn = new JButton("Ucz sie\u0107");
+		
 		teachNetBtn.setBounds(10, 79, 140, 23);
 		panel_4.add(teachNetBtn);
 
@@ -658,6 +547,145 @@ public class Cars {
 		panel_4.add(chckbxGauss);
 
 		chooser = new JFileChooser();
+		
+		registerListeners();
+		tabbedPane.setSelectedIndex(1);
+	}
+	
+	
+	private void registerListeners(){
+		
+		szukajBtn.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				double cena = parseDouble(textCena.getText());
+				double rok = parseDouble(textRok.getText());
+				double przebieg = parseDouble(textPrzebieg.getText());
+				double skrzynia = comboSkrzynia.getSelectedIndex() == 0 ? 1 : 0;
+				double moc = parseDouble(textMoc.getText());
+				double pojemnosc = parseDouble(textPojemnosc.getText());
+				double paliwo = comboPaliwo.getSelectedIndex() == 0 ? 1 : 0;
+				double drzwi = comboDrzwi.getSelectedIndex() == 0 ? 1 : 0;
+				double abs = checkAbs.isSelected() ? 1 : 0;
+				double klimatyzacja = checkKlimatyzacja.isSelected() ? 1 : 0;
+				double centralny = checkCentralnyZamek.isSelected() ? 1 : 0;
+				double alufelgi = checkAlufelgi.isSelected() ? 1 : 0;
+				double x4x4 = check4x4.isSelected() ? 1 : 0;
+				double lusterka = checkElLusterka.isSelected() ? 1 : 0;
+				double szyby = checkElSzyby.isSelected() ? 1 : 0;
+				double komputer = checkKomputer.isSelected() ? 1 : 0;
+				double szyberdach = checkSzyberdach.isSelected() ? 1 : 0;
+
+				double[] input = new double[ATTR_COUNT];
+				input[0] = cena / 150000.;
+				input[1] = (rok - 1990.) / 22.;
+				input[2] = przebieg / 250000.;
+				input[3] = skrzynia;
+				input[4] = (moc - 50.) / 150.;
+				input[5] = (pojemnosc - 500.) / 4500.;
+				input[6] = paliwo;
+				input[7] = drzwi;
+				input[8] = abs;
+				input[9] = klimatyzacja;
+				input[10] = centralny;
+				input[11] = alufelgi;
+				input[12] = x4x4;
+				input[13] = lusterka;
+				input[14] = szyby;
+				input[15] = komputer;
+				input[16] = szyberdach;
+
+				carnet.net.setInput(input);
+				carnet.net.calculateDistancesToInput();
+
+				findWinners();
+			}
+
+		});
+		
+		list.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				int selectedIndex = list.getSelectedIndex();
+				if (selectedIndex >= 0) {
+					updateCarInfo(selectedIndex);
+					fillNetMap();
+					int neuronNo = neuronsNo[selectedIndex];
+					image.setRGB(neuronNo % WIDTH, neuronNo / WIDTH, 0xFF0000);
+					netMap.repaint();
+				}
+			}
+
+		});
+		
+		
+		loadNetBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int val = chooser.showOpenDialog(frame);
+
+				if (val == JFileChooser.APPROVE_OPTION) {
+					carnet = load(chooser.getSelectedFile().getPath());
+				}
+			}
+
+			public CarNet load(String filename) {
+				try {
+					FileInputStream fis = new FileInputStream(filename);
+					GZIPInputStream gzis = new GZIPInputStream(fis);
+					ObjectInputStream in = new ObjectInputStream(gzis);
+					CarNet net = (CarNet) in.readObject();
+					in.close();
+					return net;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return null;
+			}
+		});
+		
+		saveNetBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int val = chooser.showSaveDialog(frame);
+
+				if (val == JFileChooser.APPROVE_OPTION) {
+					save(chooser.getSelectedFile().getPath(), carnet);
+				}
+			}
+
+			public void save(String filename, CarNet net) {
+				try {
+					FileOutputStream fos = new FileOutputStream(filename);
+					GZIPOutputStream gzos = new GZIPOutputStream(fos);
+					ObjectOutputStream out = new ObjectOutputStream(gzos);
+					out.writeObject(net);
+					out.flush();
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		loadTrainsetBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DbReader.Db db = DbReader.read("cars.txt", COUNT);
+				carnet.carDb = db.db;
+				carnet.attrDb = db.attrDb;
+				carnet.winnerCarForNeuron = new int[FINALSIZE];
+			}
+		});
+		
+		resetWeightsBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+               carnet.net.randomizeWeights();
+			}
+		});
+		
+		teachNetBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				teachingProcedure();
+			}
+		});
 	}
 
 	private void updateCarInfo(int index) {
