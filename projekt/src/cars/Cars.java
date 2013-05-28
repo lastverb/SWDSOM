@@ -41,7 +41,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import som.net.SOMNet;
-import test.Test;
 
 public class Cars {
 	private static final int WINNERS_CARS = 10;
@@ -119,8 +118,6 @@ public class Cars {
 				}
 			}
 		});
-		Test t = new Test();
-		t.test();
 	}
 
 	public Cars() {
@@ -207,16 +204,12 @@ public class Cars {
 				cars = new String[WINNERS_CARS];
 				carsNo = new int[WINNERS_CARS];
 				neuronsNo = new int[WINNERS_CARS];
-				for (int i = 0, j = 0; i < winners.length; i++) {
-					if (j >= WINNERS_CARS) {
-						break;
-					}
-
-					for (int k = 0; k < carnet.map.get(winners[i]).size() && j < WINNERS_CARS; k++, j++) {
-						cars[j] = carnet.carDb[carnet.map.get(winners[i]).get(k)].make + " " + carnet.carDb[carnet.map.get(winners[i]).get(k)].model;
-						carsNo[j] = carnet.map.get(winners[i]).get(k);
-						neuronsNo[j] = winners[i];
-					}
+				for (int i = 0, j = 0; i < winners.length && j < WINNERS_CARS; i++) {
+//					for (int k = 0; k < carnet.map.get(winners[i]).size() && j < WINNERS_CARS; k++, j++) {
+//						cars[j] = carnet.carDb[carnet.map.get(winners[i]).get(k)].make + " " + carnet.carDb[carnet.map.get(winners[i]).get(k)].model;
+//						carsNo[j] = carnet.map.get(winners[i]).get(k);
+//						neuronsNo[j] = winners[i];
+//					}
 				}
 
 				list.setModel(new AbstractListModel<String>() {
@@ -616,11 +609,7 @@ public class Cars {
 				DbReader.Db db = DbReader.read("cars.txt", COUNT);
 				carnet.carDb = db.db;
 				carnet.attrDb = db.attrDb;
-				carnet.map = new ArrayList<>(WIDTH*HEIGHT);
-
-				for (int i = 0; i < WIDTH*HEIGHT; i++) {
-					carnet.map.add(new LinkedList<Integer>());
-				}
+				carnet.map = new int[WIDTH*HEIGHT];
 			}
 		});
 		loadTrainsetBtn.setBounds(10, 11, 140, 23);
@@ -629,9 +618,6 @@ public class Cars {
 		JButton resetWeightsBtn = new JButton("Zresetuj wagi");
 		resetWeightsBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				for (int i = 0; i < COUNT; i++) {
-//					carnet.net.setWeight(i, carnet.attrDb[i]);
-//				}
                carnet.net.randomizeWeights();
 			}
 		});
@@ -647,7 +633,7 @@ public class Cars {
 					carnet.net.setInput(carnet.carDb[i].attr);
 					carnet.net.calculateDistancesToInput();
 					int winner = carnet.net.winner();
-					carnet.map.get(winner).add(i);
+					carnet.map[winner] = i;
 				}
 			}
 		});
