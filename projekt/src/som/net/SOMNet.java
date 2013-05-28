@@ -1,7 +1,6 @@
 package som.net;
 
 import static java.lang.Math.exp;
-import static java.lang.Math.pow;
 import static java.lang.Math.random;
 import static java.lang.Math.sqrt;
 import static java.lang.System.arraycopy;
@@ -33,10 +32,10 @@ public class SOMNet implements Serializable {
 
 	public void setInput(double[] vector) {
 		arraycopy(vector, 0, input.val, 0, vectorLength);
-//		input.normalize();
+		input.normalize();
 	}
 
-	public void calculate() {
+	public void calculateDistancesToInput() {
 		for (int i = 0; i < outputsCount; i++) {
 			distances[i] = input.euclideanDistance(weights[i]);
 		}
@@ -58,23 +57,10 @@ public class SOMNet implements Serializable {
 		return looser;
 	}
 	
-	public double weightDistance(int i, int j) {
-		return weights[i].euclideanDistance(weights[j]);
+	public double getWeight(int i, int j, int k){
+		return weights[i * width + j].val[k];
 	}
-
-	public double[][][] getWeightsMap() {
-		double[][][] map = new double[width][height][vectorLength];
-
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				int outputNo = i * width + j;
-				arraycopy(weights[outputNo].val, 0, map[i][j], 0, vectorLength);
-			}
-		}
-
-		return map;
-	}
-
+	
 	public int[] winners(int winnersCount) {
 		int[] winners = new int[winnersCount];
 		for (int i = 0; i < outputsCount; i++) {
@@ -89,90 +75,41 @@ public class SOMNet implements Serializable {
 		return winners;
 	}
 
-	public double[][] teach(double[][] trainset, double minLearningFactor, double maxLearningFactor, double minRadius, double maxRadius, int maxEpoch, boolean useGauss) {
-		double organizationMeasure[][] = new double[maxEpoch][2];
+	public void teach(double[][] trainset, double minLearningFactor, double maxLearningFactor, double minRadius, double maxRadius, int maxEpoch, boolean useGauss) {
 		for (int epoch = 0; epoch < maxEpoch; epoch++) {
-			// shuffling trainset is needed?
+			// shuffling trainset not needed?
 			for (int pattern = 0; pattern < trainset.length; pattern++) {
 				setInput(trainset[pattern]);
-				calculate();
+				calculateDistancesToInput();
 				modifyWeights(minLearningFactor, maxLearningFactor, minRadius, maxRadius, epoch, maxEpoch, useGauss);
 			}
-			organizationMeasure[epoch] = calculateOrganizationMeasure();
 		}
-		test(trainset);
-		return organizationMeasure;
+//		test(trainset);
 	}
-
-	public double[] calculateOrganizationMeasure() {
-		double denominator = 2 * width * height - width - height;
-
-		double deltah = 0;
-		double deltav = 0;
-
-		for (int h = 0; h < height; h++) {
-			for (int w = 0; w < width; w++) {
-				int wij = h * width + w;
-				int wij1 = wij + 1;
-				int wi1j = (h + 1) * width + w;
-
-				if (w < width - 1) {
-					deltah += weights[wij].clone().minus(weights[wij1]).length();
-				}
-				if (h < height - 1) {
-					deltav += weights[wij].clone().minus(weights[wi1j]).length();
-				}
-			}
-		}
-		double deltami = (deltah + deltav) / denominator;
-
-		double deltah2 = 0;
-		double deltav2 = 0;
-		for (int h = 0; h < height; h++) {
-			for (int w = 0; w < width; w++) {
-				int wij = h * width + w;
-				int wij1 = wij + 1;
-				int wi1j = (h + 1) * width + w;
-
-				if (w < width - 1) {
-					deltah2 += pow2(weights[wij].clone().minus(weights[wij1]).length() - deltami);
-				}
-				if (h < height - 1) {
-					deltav2 += pow2(weights[wij].clone().minus(weights[wi1j]).length() - deltami);
-				}
-			}
-		}
-		double deltasigma = sqrt((deltah2 + deltav2) / denominator);
-
-                double[] ret=new double[2];
-                ret[0]=deltasigma;
-                ret[1]=deltami;
-		return ret;
-	}
-
+	
 	public void randomizeWeights() {
 		for (int i = 0; i < outputsCount; i++) {
 			for (int j = 0; j < vectorLength; j++) {
 				weights[i].val[j] = random();
 			}
-//			weights[i].normalize();
-			System.out.println(i + " " + weights[i]);
+			weights[i].normalize();
+//			System.out.println(i + " " + weights[i]);
 		}
 	}
 	
 	public void setWeight(int weightNo, double[] val) {
 		arraycopy(val, 0, weights[weightNo].val, 0, vectorLength);
-//		weights[weightNo].normalize();
+		weights[weightNo].normalize();
 	}
 
 	public void modifyWeights(double minLearningFactor, double maxLearningFactor, double minRadius, double maxRadius, int epoch, int maxEpoch, boolean useGauss) {
 		int winner = winner();
 		double curRadius = inTime(minRadius, maxRadius, epoch, maxEpoch);
 		double curFactor = inTime(minLearningFactor, maxLearningFactor, epoch, maxEpoch);
-		System.out.println("----" + epoch + " " + curRadius + " " + curFactor + "----");
-		for(int i = 0; i < outputsCount; ++i)
-			System.out.print(input.euclideanDistance(weights[i]) + " ");
-		System.out.print("\n");
+//		System.out.println("----" + epoch + " " + curRadius + " " + curFactor + "----");
+//		for(int i = 0; i < outputsCount; ++i)
+//			System.out.print(input.euclideanDistance(weights[i]) + " ");
+//		System.out.print("\n");
 		for (int i = 0; i < outputsCount; i++) {
 			if (topologicD(winner, i) <= curRadius) {
 				Vector delta = input.clone().minus(weights[i]).multiply(curFactor);
@@ -182,8 +119,8 @@ public class SOMNet implements Serializable {
 				}
 
 				weights[i].plus(delta);
-//				weights[i].normalize();
-				System.out.println(i + " " + weights[i]);
+				weights[i].normalize();
+//				System.out.println(i + " " + weights[i]);
 			}
 		}
 	}
@@ -204,21 +141,11 @@ public class SOMNet implements Serializable {
 		return minV + (maxV-minV) * (maxT - curT)/(maxT);
 	}
 
-	public int[] winnerPosition() {
-		int[] position = new int[2];
-		int winner = winner();
-
-		position[0] = winner % width;
-		position[1] = winner / width;
-
-		return position;
-	}
-
 	public static double pow2(double x) {
 		return x * x;
 	}
 	
-	private void test(double[][] trainset){
+	public void test(double[][] trainset){
 		System.out.println("----- PO UCZENIU -----");
 		Vector w = new Vector(17);
 		w.val[0] = 0.5733333333333334;

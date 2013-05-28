@@ -7,7 +7,6 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.Random;
 
 import javax.swing.JButton;
@@ -36,7 +35,7 @@ public class ColorSOM {
 	private JTextField textMaxD;
 	private JTextField textTrainset;
 	private JTextField textMaxNi;
-        private JCheckBox checkFunction;
+    private JCheckBox checkFunction;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -78,12 +77,11 @@ public class ColorSOM {
 				
 				image = new BufferedImage(imgSize, imgSize, BufferedImage.TYPE_INT_RGB);
 				
-				net.randomizeWeights();	
-				double[][][] map = net.getWeightsMap();
+				net.randomizeWeights();
 
 				for (int i = 0; i < imgSize; i++) {
 					for (int j = 0; j < imgSize; j++) {
-						image.setRGB(i, j, new Color((float) map[i][j][0], (float) map[i][j][1], (float) map[i][j][2], 0f).getRGB());
+						image.setRGB(i, j, new Color((float) net.getWeight(i,j,0), (float) net.getWeight(i,j,1), (float) net.getWeight(i,j,2), 0f).getRGB());
 					}
 				}
 				display.repaint();
@@ -103,21 +101,13 @@ public class ColorSOM {
 					for (int j = 0; j < 3; j++)
 						trainset[i][j] = rnd.nextInt(255);
 
-				double[][] meaus = net.teach(trainset, Double.parseDouble(textMinNi.getText()), Double.parseDouble(textMaxNi.getText()), Integer.parseInt(textMinD.getText()), Integer.parseInt(textMaxD.getText()), Integer.parseInt(textIter.getText()), checkFunction.isSelected());
+				net.teach(trainset, Double.parseDouble(textMinNi.getText()), Double.parseDouble(textMaxNi.getText()), Integer.parseInt(textMinD.getText()), Integer.parseInt(textMaxD.getText()), Integer.parseInt(textIter.getText()), checkFunction.isSelected());
 
-                                for(int i=0;i<meaus.length;i++){
-                                    System.out.print(meaus[i][0]+" ");
-                                }System.out.print("\n");
-                                for(int i=0;i<meaus.length;i++){
-                                    System.out.print(meaus[i][1]+" ");
-                                }System.out.print("\n");
-                                
-				double[][][] map = net.getWeightsMap();
 				BufferedImage newImage = new BufferedImage(imgSize, imgSize, BufferedImage.TYPE_INT_RGB);
 
 				for (int i = 0; i < imgSize; i++) {
 					for (int j = 0; j < imgSize; j++) {
-						newImage.setRGB(i, j, new Color((float) map[i][j][0], (float) map[i][j][1], (float) map[i][j][2], 0f).getRGB());
+						newImage.setRGB(i, j, new Color((float) net.getWeight(i,j,0), (float) net.getWeight(i,j,1), (float) net.getWeight(i,j,2), 0f).getRGB());
 					}
 				}
 

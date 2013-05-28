@@ -46,9 +46,9 @@ import test.Test;
 public class Cars {
 	private static final int WINNERS_CARS = 10;
 	private static final int WINNERS_NEURON = 20;
-	public static final int COUNT = 2;
-	public static final int WIDTH = 2;
-	public static final int HEIGHT = 2;
+	public static final int COUNT = 150;
+	public static final int WIDTH = 100;
+	public static final int HEIGHT = 100;
 	public static final int ATTR_COUNT = 17;
 
 	public CarNet carnet = new CarNet();
@@ -199,7 +199,7 @@ public class Cars {
 				input[16] = szyberdach;
 
 				carnet.net.setInput(input);
-				carnet.net.calculate();
+				carnet.net.calculateDistancesToInput();
 
 				int[] winners = carnet.net.winners(WINNERS_NEURON);
 				//System.out.println(Arrays.toString(winners));
@@ -372,7 +372,7 @@ public class Cars {
 		list = new JList<>();
 		list.setModel(new AbstractListModel<String>() {
 			private static final long serialVersionUID = 1L;
-			String[] values = new String[] { "samoch\u00F3d1" };
+			String[] values = new String[0];
 
 			public int getSize() {
 				return values.length;
@@ -641,23 +641,14 @@ public class Cars {
 		JButton teachNetBtn = new JButton("Ucz sie\u0107");
 		teachNetBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				double[][] meaus = carnet.net.teach(carnet.attrDb, Double.parseDouble(minNiTxt.getText()), Double.parseDouble(maxNiTxt.getText()), Double.parseDouble(minDTxt.getText()),
+				carnet.net.teach(carnet.attrDb, Double.parseDouble(minNiTxt.getText()), Double.parseDouble(maxNiTxt.getText()), Double.parseDouble(minDTxt.getText()),
 						Double.parseDouble(maxDTxt.getText()), Integer.parseInt(maxEpochTxt.getText()), chckbxGauss.isSelected());
-                                
-//                                for(int i=0;i<meaus.length;i++){
-//                                    System.out.print(meaus[i][0]+" ");
-//                                }System.out.print("\n");
-//                                for(int i=0;i<meaus.length;i++){
-//                                    System.out.print(meaus[i][1]+" ");
-//                                }System.out.print("\n");
-                                
 				for (int i = 0; i < COUNT; i++) {
 					carnet.net.setInput(carnet.carDb[i].attr);
-					carnet.net.calculate();
+					carnet.net.calculateDistancesToInput();
 					int winner = carnet.net.winner();
 					carnet.map.get(winner).add(i);
 				}
-//				System.out.println(carnet.map);
 			}
 		});
 		teachNetBtn.setBounds(10, 79, 140, 23);
