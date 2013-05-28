@@ -14,8 +14,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -43,12 +41,13 @@ import javax.swing.event.ListSelectionListener;
 import som.net.SOMNet;
 
 public class Cars {
-	private static final int WINNERS_CARS = 10;
-	private static final int WINNERS_NEURON = 20;
-	public static final int COUNT = 150;
+	public static final int COUNT = 200;
 	public static final int WIDTH = 100;
 	public static final int HEIGHT = 100;
+	private static final int FINALSIZE = WIDTH * HEIGHT;
 	public static final int ATTR_COUNT = 17;
+	private static final int WINNERS_CARS = 10;
+	private static final int WINNERS_NEURONS = FINALSIZE;
 
 	public CarNet carnet = new CarNet();
 
@@ -96,7 +95,6 @@ public class Cars {
 	private JCheckBox checkAbs;
 	private JList<String> list;
 
-	private String[] cars;
 	private int[] carsNo;
 	private int[] neuronsNo;
 	public BufferedImage image;
@@ -198,33 +196,7 @@ public class Cars {
 				carnet.net.setInput(input);
 				carnet.net.calculateDistancesToInput();
 
-				int[] winners = carnet.net.winners(WINNERS_NEURON);
-				//System.out.println(Arrays.toString(winners));
-
-				cars = new String[WINNERS_CARS];
-				carsNo = new int[WINNERS_CARS];
-				neuronsNo = new int[WINNERS_CARS];
-				for (int i = 0, j = 0; i < winners.length && j < WINNERS_CARS; i++) {
-//					for (int k = 0; k < carnet.map.get(winners[i]).size() && j < WINNERS_CARS; k++, j++) {
-//						cars[j] = carnet.carDb[carnet.map.get(winners[i]).get(k)].make + " " + carnet.carDb[carnet.map.get(winners[i]).get(k)].model;
-//						carsNo[j] = carnet.map.get(winners[i]).get(k);
-//						neuronsNo[j] = winners[i];
-//					}
-				}
-
-				list.setModel(new AbstractListModel<String>() {
-					private static final long serialVersionUID = 1L;
-
-					public int getSize() {
-						return cars.length;
-					}
-
-					public String getElementAt(int index) {
-						return cars[index];
-					}
-				});
-
-				updateNetMap();
+				findWinners();
 			}
 
 		});
@@ -377,22 +349,15 @@ public class Cars {
 		});
 		scrollPane.setViewportView(list);
 		list.addListSelectionListener(new ListSelectionListener() {
-			boolean sndChange = false;
-
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
-				if (sndChange) {
-					int selectedIndex = list.getSelectedIndex();
-					if (selectedIndex >= 0) {
-						updateCarInfo(selectedIndex);
-						fillNetMap();
-						int neuronNo = neuronsNo[selectedIndex];
-						image.setRGB(neuronNo % WIDTH, neuronNo / WIDTH, 0xFF0000);
-						netMap.repaint();
-						sndChange = false;
-					}
-				} else {
-					sndChange = true;
+				int selectedIndex = list.getSelectedIndex();
+				if (selectedIndex >= 0) {
+					updateCarInfo(selectedIndex);
+					fillNetMap();
+					int neuronNo = neuronsNo[selectedIndex];
+					image.setRGB(neuronNo % WIDTH, neuronNo / WIDTH, 0xFF0000);
+					netMap.repaint();
 				}
 			}
 
@@ -609,7 +574,7 @@ public class Cars {
 				DbReader.Db db = DbReader.read("cars.txt", COUNT);
 				carnet.carDb = db.db;
 				carnet.attrDb = db.attrDb;
-				carnet.map = new int[WIDTH*HEIGHT];
+				carnet.winnerCarForNeuron = new int[FINALSIZE];
 			}
 		});
 		loadTrainsetBtn.setBounds(10, 11, 140, 23);
@@ -627,14 +592,7 @@ public class Cars {
 		JButton teachNetBtn = new JButton("Ucz sie\u0107");
 		teachNetBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				carnet.net.teach(carnet.attrDb, Double.parseDouble(minNiTxt.getText()), Double.parseDouble(maxNiTxt.getText()), Double.parseDouble(minDTxt.getText()),
-						Double.parseDouble(maxDTxt.getText()), Integer.parseInt(maxEpochTxt.getText()), chckbxGauss.isSelected());
-				for (int i = 0; i < COUNT; i++) {
-					carnet.net.setInput(carnet.carDb[i].attr);
-					carnet.net.calculateDistancesToInput();
-					int winner = carnet.net.winner();
-					carnet.map[winner] = i;
-				}
+				teachingProcedure();
 			}
 		});
 		teachNetBtn.setBounds(10, 79, 140, 23);
@@ -741,6 +699,65 @@ public class Cars {
 				float distance = (float) carnet.net.distances[i * HEIGHT + j] - minDistance;
 				Color color = new Color(distance / maxDistance, distance / maxDistance, distance / maxDistance, 0f);
 				image.setRGB(j, i, color.getRGB());
+			}
+		}
+	}
+	
+	private void findWinners(){
+		int[] winners = carnet.net.winners(WINNERS_NEURONS);
+
+		carsNo = new int[WINNERS_CARS];
+		neuronsNo = new int[WINNERS_CARS];
+		int found = 0;
+		boolean notThere;
+		
+		for(int i = 0; i < WINNERS_NEURONS && found < WINNERS_CARS; ++i){
+			notThere = true;
+			for(int j = 0; j < found; ++j){
+				if(carsNo[j] == carnet.winnerCarForNeuron[winners[i]]){
+					notThere = false;
+					break;
+				}
+			}
+			if(notThere){
+				neuronsNo[found] = winners[i];
+				carsNo[found] = carnet.winnerCarForNeuron[winners[i]];
+				++found;
+			}
+		}
+		
+		list.setModel(new AbstractListModel<String>() {
+			private static final long serialVersionUID = 1L;
+
+			public int getSize() {
+				return carsNo.length;
+			}
+
+			public String getElementAt(int index) {
+				return carnet.carDb[carsNo[index]].make + " " + carnet.carDb[carsNo[index]].model;
+			}
+		});
+
+		updateNetMap();
+	}
+	
+	private void teachingProcedure(){
+		carnet.net.teach(carnet.attrDb, Double.parseDouble(minNiTxt.getText()), Double.parseDouble(maxNiTxt.getText()), Double.parseDouble(minDTxt.getText()),
+				Double.parseDouble(maxDTxt.getText()), Integer.parseInt(maxEpochTxt.getText()), chckbxGauss.isSelected());
+
+		double[] temp = new double[FINALSIZE];
+		for(int j = 0; j < FINALSIZE; ++j){
+			temp[j] = 99999;
+		}
+		
+		for (int i = 0; i < COUNT; ++i) {
+			carnet.net.setInput(carnet.carDb[i].attr);
+			carnet.net.calculateDistancesToInput();
+			for(int j = 0; j < FINALSIZE; ++j){
+				if(temp[j] > carnet.net.distances[j]){
+					temp[j] = carnet.net.distances[j];
+					carnet.winnerCarForNeuron[j] = i;
+				}
 			}
 		}
 	}
