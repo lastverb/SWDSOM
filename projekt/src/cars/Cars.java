@@ -41,7 +41,7 @@ import javax.swing.event.ListSelectionListener;
 import som.net.SOMNet;
 
 public class Cars {
-	public static final int COUNT = 200;
+	public static final int COUNT = 250;
 	public static final int WIDTH = 100;
 	public static final int HEIGHT = 100;
 	private static final int FINALSIZE = WIDTH * HEIGHT;
@@ -72,9 +72,9 @@ public class Cars {
 	private JTextField textSkrzynia2;
 	private JTextField textPaliwo2;
 	private JTextField textDrzwi2;
-	private JComboBox comboSkrzynia;
-	private JComboBox comboPaliwo;
-	private JComboBox comboDrzwi;
+	private JComboBox<String> comboSkrzynia;
+	private JComboBox<String> comboPaliwo;
+	private JComboBox<String> comboDrzwi;
 	private JCheckBox checkKlimatyzacja;
 	private JCheckBox checkCentralnyZamek;
 	private JCheckBox checkAlufelgi;
@@ -226,8 +226,8 @@ public class Cars {
 		panel_5.add(textPrzebieg);
 		textPrzebieg.setColumns(10);
 
-		comboSkrzynia = new JComboBox();
-		comboSkrzynia.setModel(new DefaultComboBoxModel(new String[] { "automatyczna", "manualna" }));
+		comboSkrzynia = new JComboBox<String>();
+		comboSkrzynia.setModel(new DefaultComboBoxModel<String>(new String[] { "automatyczna", "manualna" }));
 		comboSkrzynia.setBounds(90, 85, 50, 22);
 		panel_5.add(comboSkrzynia);
 
@@ -244,12 +244,12 @@ public class Cars {
 		panel_5.add(textPojemnosc);
 
 		comboPaliwo = new JComboBox<String>();
-		comboPaliwo.setModel(new DefaultComboBoxModel(new String[] { "diesel", "benzyna" }));
+		comboPaliwo.setModel(new DefaultComboBoxModel<String>(new String[] { "diesel", "benzyna" }));
 		comboPaliwo.setBounds(230, 11, 50, 22);
 		panel_5.add(comboPaliwo);
 
 		comboDrzwi = new JComboBox<String>();
-		comboDrzwi.setModel(new DefaultComboBoxModel(new String[] { "4/5", "2/3" }));
+		comboDrzwi.setModel(new DefaultComboBoxModel<String>(new String[] { "4/5", "2/3" }));
 		comboDrzwi.setBounds(230, 36, 50, 22);
 		panel_5.add(comboDrzwi);
 

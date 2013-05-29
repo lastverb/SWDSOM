@@ -32,6 +32,7 @@ public class DbReader {
 				attrDb[i] = attr;
 			}
 
+			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
