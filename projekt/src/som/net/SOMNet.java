@@ -6,6 +6,7 @@ import static java.lang.Math.sqrt;
 import static java.lang.System.arraycopy;
 
 import java.io.Serializable;
+import java.util.Random;
 
 public class SOMNet implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -77,7 +78,7 @@ public class SOMNet implements Serializable {
 
 	public void teach(double[][] trainset, double minLearningFactor, double maxLearningFactor, double minRadius, double maxRadius, int maxEpoch, boolean useGauss) {
 		for (int epoch = 0; epoch < maxEpoch; epoch++) {
-			// shuffling trainset not needed?
+			shuffle(trainset);
 			for (int pattern = 0; pattern < trainset.length; pattern++) {
 				setInput(trainset[pattern]);
 				calculateDistancesToInput();
@@ -143,6 +144,17 @@ public class SOMNet implements Serializable {
 
 	public static double pow2(double x) {
 		return x * x;
+	}
+	
+	public static void shuffle(double[][] set){
+		Random rnd = new Random();
+	    int mid = set.length / 2;
+	    for (int i = mid; i < set.length; i++) {
+	        int lo = rnd.nextInt(mid);
+	        double[] buffer = set[lo];
+	        set[lo] = set[i];
+	        set[i] = buffer;
+	    }
 	}
 	
 	public void test(double[][] trainset){
