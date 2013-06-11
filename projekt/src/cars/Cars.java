@@ -197,16 +197,16 @@ public class Cars {
 
 		JLabel lblPaliwo = new JLabel("Paliwo:");
 		lblPaliwo.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblPaliwo.setBounds(150, 15, 70, 14);
+		lblPaliwo.setBounds(160, 15, 70, 14);
 		panel_5.add(lblPaliwo);
 
 		JLabel lblDrzwi = new JLabel("Drzwi:");
 		lblDrzwi.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblDrzwi.setBounds(150, 40, 70, 14);
+		lblDrzwi.setBounds(160, 40, 70, 14);
 		panel_5.add(lblDrzwi);
 
 		checkAbs = new JCheckBox("ABS");
-		checkAbs.setBounds(150, 61, 130, 20);
+		checkAbs.setBounds(195, 61, 50, 20);
 		panel_5.add(checkAbs);
 
 		textCena = new JTextField();
@@ -229,7 +229,7 @@ public class Cars {
 
 		comboSkrzynia = new JComboBox<String>();
 		comboSkrzynia.setModel(new DefaultComboBoxModel<String>(new String[] { "automatyczna", "manualna" }));
-		comboSkrzynia.setBounds(90, 85, 50, 22);
+		comboSkrzynia.setBounds(90, 85, 95, 22);
 		panel_5.add(comboSkrzynia);
 
 		textMoc = new JTextField();
@@ -246,44 +246,44 @@ public class Cars {
 
 		comboPaliwo = new JComboBox<String>();
 		comboPaliwo.setModel(new DefaultComboBoxModel<String>(new String[] { "diesel", "benzyna" }));
-		comboPaliwo.setBounds(230, 11, 50, 22);
+		comboPaliwo.setBounds(240, 11, 70, 22);
 		panel_5.add(comboPaliwo);
 
 		comboDrzwi = new JComboBox<String>();
 		comboDrzwi.setModel(new DefaultComboBoxModel<String>(new String[] { "4/5", "2/3" }));
-		comboDrzwi.setBounds(230, 36, 50, 22);
+		comboDrzwi.setBounds(240, 36, 50, 22);
 		panel_5.add(comboDrzwi);
 
 		checkKlimatyzacja = new JCheckBox("klimatyzacja");
-		checkKlimatyzacja.setBounds(150, 89, 130, 19);
+		checkKlimatyzacja.setBounds(195, 89, 90, 19);
 		panel_5.add(checkKlimatyzacja);
 
 		checkCentralnyZamek = new JCheckBox("centralny zamek");
-		checkCentralnyZamek.setBounds(150, 110, 130, 19);
+		checkCentralnyZamek.setBounds(195, 110, 110, 19);
 		panel_5.add(checkCentralnyZamek);
 
 		checkAlufelgi = new JCheckBox("alufelgi");
-		checkAlufelgi.setBounds(150, 134, 130, 19);
+		checkAlufelgi.setBounds(195, 134, 90, 19);
 		panel_5.add(checkAlufelgi);
 
 		check4x4 = new JCheckBox("4x4");
-		check4x4.setBounds(290, 14, 129, 15);
+		check4x4.setBounds(320, 14, 90, 15);
 		panel_5.add(check4x4);
 
 		checkElLusterka = new JCheckBox("el. lusterka");
-		checkElLusterka.setBounds(290, 38, 130, 19);
+		checkElLusterka.setBounds(320, 38, 90, 19);
 		panel_5.add(checkElLusterka);
 
 		checkElSzyby = new JCheckBox("el. szyby");
-		checkElSzyby.setBounds(290, 63, 130, 19);
+		checkElSzyby.setBounds(320, 63, 90, 19);
 		panel_5.add(checkElSzyby);
 
 		checkKomputer = new JCheckBox("komputer");
-		checkKomputer.setBounds(290, 88, 130, 19);
+		checkKomputer.setBounds(320, 88, 90, 19);
 		panel_5.add(checkKomputer);
 
 		checkSzyberdach = new JCheckBox("szyberdach");
-		checkSzyberdach.setBounds(290, 113, 130, 19);
+		checkSzyberdach.setBounds(320, 113, 90, 19);
 		panel_5.add(checkSzyberdach);
 
 		JPanel panel_6 = new JPanel();
@@ -380,75 +380,75 @@ public class Cars {
 
 		JLabel label_6 = new JLabel("Paliwo:");
 		label_6.setHorizontalAlignment(SwingConstants.RIGHT);
-		label_6.setBounds(150, 15, 70, 14);
+		label_6.setBounds(160, 15, 70, 14);
 		panel_7.add(label_6);
 
 		JLabel label_7 = new JLabel("Drzwi:");
 		label_7.setHorizontalAlignment(SwingConstants.RIGHT);
-		label_7.setBounds(150, 40, 70, 14);
+		label_7.setBounds(160, 40, 70, 14);
 		panel_7.add(label_7);
 
 		checkAbs2 = new JCheckBox("ABS");
 		checkAbs2.setEnabled(false);
-		checkAbs2.setBounds(150, 61, 130, 19);
+		checkAbs2.setBounds(195, 61, 90, 19);
 		panel_7.add(checkAbs2);
 
 		checkKlimatyzacja2 = new JCheckBox("klimatyzacja");
 		checkKlimatyzacja2.setEnabled(false);
-		checkKlimatyzacja2.setBounds(150, 89, 130, 19);
+		checkKlimatyzacja2.setBounds(195, 89, 90, 19);
 		panel_7.add(checkKlimatyzacja2);
 
 		checkCentralnyZamek2 = new JCheckBox("centralny zamek");
 		checkCentralnyZamek2.setEnabled(false);
-		checkCentralnyZamek2.setBounds(150, 110, 130, 19);
+		checkCentralnyZamek2.setBounds(195, 110, 110, 19);
 		panel_7.add(checkCentralnyZamek2);
 
 		checkAlufelgi2 = new JCheckBox("alufelgi");
 		checkAlufelgi2.setEnabled(false);
-		checkAlufelgi2.setBounds(150, 134, 130, 19);
+		checkAlufelgi2.setBounds(195, 134, 90, 19);
 		panel_7.add(checkAlufelgi2);
 
 		check4x42 = new JCheckBox("4x4");
 		check4x42.setEnabled(false);
-		check4x42.setBounds(290, 14, 129, 19);
+		check4x42.setBounds(320, 14, 90, 19);
 		panel_7.add(check4x42);
 
 		checkElLusterka2 = new JCheckBox("el. lusterka");
 		checkElLusterka2.setEnabled(false);
-		checkElLusterka2.setBounds(290, 39, 129, 19);
+		checkElLusterka2.setBounds(320, 39, 90, 19);
 		panel_7.add(checkElLusterka2);
 
 		checkElSzyby2 = new JCheckBox("el. szyby");
 		checkElSzyby2.setEnabled(false);
-		checkElSzyby2.setBounds(290, 63, 129, 19);
+		checkElSzyby2.setBounds(320, 63, 90, 19);
 		panel_7.add(checkElSzyby2);
 
 		checkKomputer2 = new JCheckBox("komputer");
 		checkKomputer2.setEnabled(false);
-		checkKomputer2.setBounds(290, 88, 129, 19);
+		checkKomputer2.setBounds(320, 88, 90, 19);
 		panel_7.add(checkKomputer2);
 
 		checkSzyberdach2 = new JCheckBox("szyberdach");
 		checkSzyberdach2.setEnabled(false);
-		checkSzyberdach2.setBounds(290, 113, 129, 19);
+		checkSzyberdach2.setBounds(320, 113, 90, 19);
 		panel_7.add(checkSzyberdach2);
 
 		textSkrzynia2 = new JTextField();
 		textSkrzynia2.setEditable(false);
 		textSkrzynia2.setColumns(10);
-		textSkrzynia2.setBounds(90, 86, 50, 20);
+		textSkrzynia2.setBounds(90, 86, 95, 20);
 		panel_7.add(textSkrzynia2);
 
 		textPaliwo2 = new JTextField();
 		textPaliwo2.setEditable(false);
 		textPaliwo2.setColumns(10);
-		textPaliwo2.setBounds(230, 11, 50, 20);
+		textPaliwo2.setBounds(240, 11, 70, 20);
 		panel_7.add(textPaliwo2);
 
 		textDrzwi2 = new JTextField();
 		textDrzwi2.setEditable(false);
 		textDrzwi2.setColumns(10);
-		textDrzwi2.setBounds(230, 36, 50, 20);
+		textDrzwi2.setBounds(240, 36, 50, 20);
 		panel_7.add(textDrzwi2);
 
 		JPanel panel_2 = new JPanel();
