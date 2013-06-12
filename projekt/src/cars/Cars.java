@@ -499,7 +499,7 @@ public class Cars {
 		panel_4.add(maxEpochTxt);
 		maxEpochTxt.setColumns(10);
 
-		JLabel lblMinD = new JLabel("Min d:");
+		JLabel lblMinD = new JLabel("Min l:");
 		lblMinD.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblMinD.setBounds(231, 49, 100, 14);
 		panel_4.add(lblMinD);
@@ -510,7 +510,7 @@ public class Cars {
 		panel_4.add(minDTxt);
 		minDTxt.setColumns(10);
 
-		JLabel lblMaxD = new JLabel("Max d:");
+		JLabel lblMaxD = new JLabel("Max l:");
 		lblMaxD.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblMaxD.setBounds(231, 83, 100, 14);
 		panel_4.add(lblMaxD);
@@ -521,7 +521,7 @@ public class Cars {
 		panel_4.add(maxDTxt);
 		maxDTxt.setColumns(10);
 
-		JLabel lblMinNi = new JLabel("Min ni:");
+		JLabel lblMinNi = new JLabel("Min u:");
 		lblMinNi.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblMinNi.setBounds(231, 114, 100, 14);
 		panel_4.add(lblMinNi);
@@ -532,7 +532,7 @@ public class Cars {
 		panel_4.add(minNiTxt);
 		minNiTxt.setColumns(10);
 
-		JLabel lblMaxNi = new JLabel("Max ni:");
+		JLabel lblMaxNi = new JLabel("Max u:");
 		lblMaxNi.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblMaxNi.setBounds(231, 145, 100, 14);
 		panel_4.add(lblMaxNi);
